@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.academy.tinkoff.rancher.component.RunAfterStartup;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -35,6 +36,6 @@ public class SystemControllerTest {
         // then
         result
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.RancherService").value("OK"));
+                .andExpect(jsonPath("$.RancherService").value(RunAfterStartup.readiness));
     }
 }

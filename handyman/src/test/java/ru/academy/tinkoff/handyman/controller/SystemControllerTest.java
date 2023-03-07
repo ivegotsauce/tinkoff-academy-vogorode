@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.academy.tinkoff.handyman.component.RunAfterStartup;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -34,6 +35,6 @@ public class SystemControllerTest {
         // then
         result
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.HandymanService").value("OK"));
+                .andExpect(jsonPath("$.HandymanService").value(RunAfterStartup.readiness));
     }
 }
