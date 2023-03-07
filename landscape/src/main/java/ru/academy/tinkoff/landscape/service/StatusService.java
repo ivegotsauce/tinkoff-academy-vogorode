@@ -32,8 +32,8 @@ public class StatusService {
      * @return Map with service name and it's {@link ServiceStatusDTO}s
      */
     public Map<String, List<ServiceStatusDTO>> getStatuses() {
-        Map<String, List<ServiceStatusDTO>> map = new HashMap<>(Map.of("HandymanService", new ArrayList<>(),
-                "RancherService", new ArrayList<>()));
+        Map<String, List<ServiceStatusDTO>> map = new HashMap<>(Map.of(handymanServiceName, new ArrayList<>(),
+                rancherServiceName, new ArrayList<>()));
         for (var p : List.of(
                 Pair.of(handymanServiceName, handymanService),
                 Pair.of(rancherServiceName, rancherService)
