@@ -7,6 +7,7 @@ import lombok.Setter;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 import ru.academy.tinkoff.landscape.dto.ServiceStatusDTO;
+import ru.academy.tinkoff.landscape.util.Pair;
 import ru.academy.tinkoff.proto.ReadinessResponse;
 import ru.academy.tinkoff.proto.StatusServiceGrpc;
 import ru.academy.tinkoff.proto.VersionResponse;
@@ -24,6 +25,8 @@ public class StatusService {
     private StatusServiceGrpc.StatusServiceBlockingStub handymanService;
     @GrpcClient("RancherService")
     private StatusServiceGrpc.StatusServiceBlockingStub rancherService;
+    private String handymanServiceName = "HandymanService";
+    private String rancherServiceName = "RancherService";
 
     /**
      * @return Map with service name and it's {@link ServiceStatusDTO}s
@@ -31,23 +34,18 @@ public class StatusService {
     public Map<String, List<ServiceStatusDTO>> getStatuses() {
         Map<String, List<ServiceStatusDTO>> map = new HashMap<>(Map.of("HandymanService", new ArrayList<>(),
                 "RancherService", new ArrayList<>()));
-        addService(handymanService, map, false);
-        addService(rancherService, map, true);
-        return map;
-    }
-
-    private void addService(StatusServiceGrpc.StatusServiceBlockingStub stub,
-                            Map<String, List<ServiceStatusDTO>> map, boolean rancher) {
-        try {
-            ServiceStatusDTO dto = getServiceStatus(stub);
-            if (rancher) {
-                map.get("RancherService").add(dto);
-            } else {
-                map.get("HandymanService").add(dto);
+        for (var p : List.of(
+                Pair.of(handymanServiceName, handymanService),
+                Pair.of(rancherServiceName, rancherService)
+        )) {
+            try {
+                ServiceStatusDTO dto = getServiceStatus(p.getSecond());
+                map.get(p.getFirst()).add(dto);
+            } catch (StatusRuntimeException ignored) {
+                //
             }
-        } catch (StatusRuntimeException ignored) {
-            //
         }
+        return map;
     }
 
     private ServiceStatusDTO getServiceStatus(StatusServiceGrpc.StatusServiceBlockingStub stub) {
