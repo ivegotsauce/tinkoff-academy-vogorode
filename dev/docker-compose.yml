@@ -1,0 +1,42 @@
+version: "3.9"
+services:
+  handyman:
+    container_name: handyman
+    image: handyman:latest
+    build: ../handyman
+    ports:
+      - "8080:8080"
+    environment:
+      - grpc.server.address=0.0.0.0
+  rancher:
+    container_name: rancher
+    image: rancher:latest
+    build: ../handyman
+    ports:
+      - "8090:8090"
+    environment:
+      - grpc.server.address=0.0.0.0
+  landscape:
+    container_name: landscape
+    image: landscape:latest
+    build: ../landscape
+    ports:
+      - "8085:8085"
+    depends_on:
+      - handyman
+      - rancher
+    environment:
+      - grpc.client.HandymanService.address=static://handyman:9080
+      - grpc.client.RancherService.address=static://rancher:9090
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: "db"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "user"
+    ports:
+      - "5432:5432"
+  prometheus:
+    image: prom/prometheus:latest
+  grafana:
+    image: grafana/grafana:latest
