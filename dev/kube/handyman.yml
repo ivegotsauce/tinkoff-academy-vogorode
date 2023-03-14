@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: handyman
+spec:
+  selector:
+    matchLabels:
+      app: handyman
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: handyman
+    spec:
+      containers:
+        - name: handyman
+          image: handyman:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+            - containerPort: 9080
+          env:
+            - name: grpc.server.address
+              value: 0.0.0.0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: handyman
+spec:
+  selector:
+    app: handyman
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+      name: handyman-port
+    - port: 9080
+      protocol: TCP
+      targetPort: 9080
+      name: handyman-grpc-port
+  type: NodePort
