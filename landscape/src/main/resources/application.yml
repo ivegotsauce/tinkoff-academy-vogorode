@@ -22,3 +22,10 @@ grpc:
     RancherService:
       address: "localhost:9090"
       negotiation-type: plaintext
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db
+    username: user
+    password: user
+  liquibase:
+    change-log: classpath:db/changelog/changelog.yml
