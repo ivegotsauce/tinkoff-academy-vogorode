@@ -23,6 +23,12 @@ spec:
               value: static://handyman:9080
             - name: grpc.client.RancherService.address
               value: static://rancher:9090
+            - name: spring.datasource.url
+              value: jdbc:postgresql://postgres:5432/db
+            - name: spring.datasource.username
+              value: postgres
+            - name: spring.datasource.password
+              value: "123"
 ---
 apiVersion: v1
 kind: Service

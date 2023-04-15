@@ -22,6 +22,10 @@ spec:
           env:
             - name: grpc.server.address
               value: 0.0.0.0
+            - name: landscapeAPI.address
+              value: http://landscape:8085
+            - name: spring.data.mongodb.uri
+              value: mongodb://mongodb:27017/handyman
 ---
 apiVersion: v1
 kind: Service

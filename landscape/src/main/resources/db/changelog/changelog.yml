@@ -2,8 +2,6 @@ databaseChangeLog:
   - include:
       file: db/2023-03-16--01-create-table-client.sql
   - include:
-      file: db/2023-03-17--01-insert-into-client.sql
-  - include:
       file: db/2023-03-17--02-alter-table-client.sql
   - include:
       file: db/2023-03-17--03-procedure-table-client.sql

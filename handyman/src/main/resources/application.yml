@@ -16,3 +16,13 @@ grpc:
   server:
     address: 127.0.0.1
     port: 9080
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: handyman
+  liquibase:
+    change-log: classpath:db/changelog/changelog.yml
+landscapeAPI:
+  address: "http://localhost:8085"
