@@ -3,7 +3,11 @@ services:
   handyman:
     container_name: handyman
     image: handyman:latest
-    build: ../handyman
+    build:
+      context: ../handyman
+      dockerfile: Dockerfile
+      args:
+        DOCKER_BUILDKIT: "1"
     ports:
       - "8080:8080"
     environment:
@@ -11,7 +15,11 @@ services:
   rancher:
     container_name: rancher
     image: rancher:latest
-    build: ../handyman
+    build:
+      context: ../rancher
+      dockerfile: Dockerfile
+      args:
+        DOCKER_BUILDKIT: "1"
     ports:
       - "8090:8090"
     environment:
@@ -19,16 +27,22 @@ services:
   landscape:
     container_name: landscape
     image: landscape:latest
-    build: ../landscape
+    build:
+      context: ../landscape
+      dockerfile: Dockerfile
+      args:
+        DOCKER_BUILDKIT: "1"
     ports:
       - "8085:8085"
     depends_on:
       - handyman
       - rancher
+      - postgres
     environment:
       - grpc.client.HandymanService.address=static://handyman:9080
       - grpc.client.RancherService.address=static://rancher:9090
   postgres:
+    container_name: postgres
     image: postgres:latest
     environment:
       POSTGRES_DB: "db"
