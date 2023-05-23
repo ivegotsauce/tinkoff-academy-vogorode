@@ -1,5 +1,6 @@
 package ru.academy.tinkoff.landscape.controller;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,24 +19,29 @@ public class UserController {
 
     private final UserService userService;
 
+    @Timed("landscapeCreateUser")
     @PostMapping
     public UUID create(@RequestBody UserDTO dto) {return userService.createUser(dto);}
 
+    @Timed("landscapeUpdateUser")
     @PutMapping("/{id}")
     public User update(@PathVariable UUID id, @RequestBody UserDTO dto) {
         return userService.updateUser(id, dto);
     }
 
+    @Timed("landscapeDeleteUser")
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable UUID id) {
         userService.deleteUserById(id);
     }
 
+    @Timed("landscapeGetAllUsers")
     @GetMapping
     public List<User> findAll() {
         return userService.findAll();
     }
 
+    @Timed("landscapeGetUser")
     @GetMapping("/{id}")
     public User findById(@PathVariable UUID id) {
         User user = userService.findById(id);
