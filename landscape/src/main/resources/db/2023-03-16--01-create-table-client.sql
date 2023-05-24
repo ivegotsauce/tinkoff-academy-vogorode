@@ -1,3 +1,5 @@
+create extension "uuid-ossp";
+
 create table if not exists client
 (
     id            uuid primary key default uuid_generate_v4(),
