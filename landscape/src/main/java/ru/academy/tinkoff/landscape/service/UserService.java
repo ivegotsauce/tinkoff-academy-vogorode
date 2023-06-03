@@ -2,7 +2,7 @@ package ru.academy.tinkoff.landscape.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.academy.tinkoff.landscape.domain.User;
+import ru.academy.tinkoff.landscape.domain.Client;
 import ru.academy.tinkoff.landscape.dto.UserDTO;
 import ru.academy.tinkoff.landscape.repository.UserRepository;
 
@@ -16,9 +16,9 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UUID createUser(UserDTO dto) {
-        User user = new User();
+        Client client = new Client();
         saveUser(
-                user,
+                client,
                 dto.userType(),
                 dto.login(),
                 dto.email(),
@@ -27,14 +27,14 @@ public class UserService {
                 dto.latitude(),
                 dto.longitude()
         );
-        return user.getId();
+        return client.getId();
     }
 
-    public User updateUser(UUID id, UserDTO dto) {
-        User user = new User();
-        user.setId(id);
+    public Client updateUser(UUID id, UserDTO dto) {
+        Client client = new Client();
+        client.setId(id);
         return saveUser(
-                user,
+                client,
                 dto.userType(),
                 dto.login(),
                 dto.email(),
@@ -45,27 +45,27 @@ public class UserService {
         );
     }
 
-    private User saveUser(User user, String userType, String login, String email,
-                          String phoneNumber, int userTypeId, double latitude, double longitude) {
-        user.setUserType(userType);
-        user.setLogin(login);
-        user.setEmail(email);
-        user.setPhoneNumber(phoneNumber);
-        user.setUserTypeId(userTypeId);
-        user.setLatitude(latitude);
-        user.setLongitude(longitude);
-        return userRepository.save(user);
+    private Client saveUser(Client client, String userType, String login, String email,
+                            String phoneNumber, int userTypeId, double latitude, double longitude) {
+        client.setUserType(userType);
+        client.setLogin(login);
+        client.setEmail(email);
+        client.setPhoneNumber(phoneNumber);
+        client.setUserTypeId(userTypeId);
+        client.setLatitude(latitude);
+        client.setLongitude(longitude);
+        return userRepository.save(client);
     }
 
     public void deleteUserById(UUID id) {
         userRepository.deleteById(id);
     }
 
-    public User findById(UUID id) {
+    public Client findById(UUID id) {
         return userRepository.findById(id).orElse(null);
     }
 
-    public List<User> findAll() {
+    public List<Client> findAll() {
         return userRepository.findAll();
     }
 }

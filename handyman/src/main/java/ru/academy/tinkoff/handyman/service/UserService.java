@@ -1,58 +1,47 @@
 package ru.academy.tinkoff.handyman.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpEntity;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
-import ru.academy.tinkoff.handyman.domain.User;
-import ru.academy.tinkoff.handyman.dto.LandscapeUserDTO;
+import ru.academy.tinkoff.handyman.dto.AccountDTO;
 import ru.academy.tinkoff.handyman.dto.UserDTO;
+import ru.academy.tinkoff.handyman.entity.Account;
+import ru.academy.tinkoff.handyman.entity.Skill;
+import ru.academy.tinkoff.handyman.entity.User;
 import ru.academy.tinkoff.handyman.repository.UserRepository;
-import ru.academy.tinkoff.handyman.util.Pair;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserService {
-
-    private static final String USER_TYPE = "handyman";
-    private final UserRepository userRepository;
-    @Autowired
-    private Environment env;
-
-    public User createUser(UserDTO dto) throws MalformedURLException, URISyntaxException {
-        try {
-            var args = getRestArgs(dto, "/user");
-            var request = args.first();
-            var url = args.second();
-            RestTemplate restTemplate = new RestTemplate();
-            UUID id = restTemplate.postForObject(url.toURI(), request, UUID.class);
-            User user = new User(
-                    id,
-                    dto.services(),
-                    dto.latitude(),
-                    dto.longitude()
-            );
-            return userRepository.save(user);
-        } catch (RestClientException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY);
+    private UserRepository userRepository;
+    private AccountService accountService;
+    @Transactional
+    public User createUser(UserDTO dto) {
+        User user = new User();
+        dtoToUser(dto, user);
+        user = userRepository.save(user);
+        List<Account> accounts = new ArrayList<>();
+        for (AccountDTO accountDTO : dto.accounts()) {
+            accounts.add(accountService.createAccount(user.getId(), accountDTO));
         }
+        user.setAccounts(accounts);
+        return userRepository.save(user);
     }
 
-    public User findById(UUID id) {
+    public User updateUser(Long id, UserDTO dto) {
+        User user = findById(id);
+        dtoToUser(dto, user);
+        return userRepository.save(user);
+    }
+
+    public User findById(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with id " + id)
         );
     }
 
@@ -60,41 +49,29 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void deleteById(UUID id) {
+    public List<User> findAllSorted() {
+        return userRepository.findByOrderByLastNameAsc();
+    }
+
+    public void delete(Long id) {
         userRepository.deleteById(id);
     }
 
-    public User updateUser(UUID id, UserDTO dto) throws MalformedURLException, URISyntaxException {
-        try {
-            var args = getRestArgs(dto, "/user/" + id.toString());
-            var request = args.first();
-            var url = args.second();
-            RestTemplate restTemplate = new RestTemplate();
-            restTemplate.put(url.toURI(), request);
-            User user = new User(
-                    id,
-                    dto.services(),
-                    dto.latitude(),
-                    dto.longitude()
-            );
-            return userRepository.save(user);
-        } catch (RestClientException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY);
+    private void dtoToUser(UserDTO dto, User user) {
+        user.setEmail(dto.email());
+        user.setPhoto(dto.photo());
+        user.setFirstName(dto.firstName());
+        user.setLastName(dto.lastName());
+        user.setPhoneNumber(dto.phoneNumber());
+        List<Skill> skills = new ArrayList<>();
+        for (String skill : dto.skills()) {
+            try {
+                skills.add(Skill.valueOf(skill.substring(0, 1).toUpperCase()
+                        + skill.substring(1).toLowerCase()));
+            } catch (IllegalArgumentException ignored) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid skill provided: " + skill);
+            }
         }
-    }
-
-    public Pair<HttpEntity<LandscapeUserDTO>, URL> getRestArgs(UserDTO dto, String req) throws MalformedURLException {
-        LandscapeUserDTO body = new LandscapeUserDTO(
-                USER_TYPE,
-                dto.login(),
-                dto.email(),
-                dto.phoneNumber(),
-                dto.latitude(),
-                dto.longitude()
-        );
-        URL domain = new URL(Objects.requireNonNull(env.getProperty("landscapeAPI.address")));
-        URL url = new URL(domain, req);
-        HttpEntity<LandscapeUserDTO> request = new HttpEntity<>(body);
-        return Pair.of(request, url);
+        user.setSkills(skills);
     }
 }

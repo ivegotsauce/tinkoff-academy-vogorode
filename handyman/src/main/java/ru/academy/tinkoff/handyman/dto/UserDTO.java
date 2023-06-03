@@ -3,11 +3,12 @@ package ru.academy.tinkoff.handyman.dto;
 import java.util.List;
 
 public record UserDTO(
-        String login,
+        String firstName,
+        String lastName,
+        List<String> skills,
         String email,
         String phoneNumber,
-        double latitude,
-        double longitude,
-        List<String> services
+        List<AccountDTO> accounts,
+        byte[] photo
 ) {
 }

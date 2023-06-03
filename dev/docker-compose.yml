@@ -3,7 +3,11 @@ services:
   handyman:
     container_name: handyman
     image: handyman:latest
-    build: ../handyman
+    build:
+      context: ../handyman
+      dockerfile: Dockerfile
+      args:
+        DOCKER_BUILDKIT: "1"
     depends_on:
       - mongodb
     ports:
@@ -12,22 +16,36 @@ services:
       - grpc.server.address=0.0.0.0
       - spring.data.mongodb.uri=mongodb://mongodb:27017/handyman
       - landscapeAPI.address=http://landscape:8085
+      - spring.datasource.url=jdbc:postgresql://postgres:5432/db?currentSchema=public&stringtype=unspecified
+      - spring.datasource.username=user
+      - spring.datasource.password=user
   rancher:
     container_name: rancher
     image: rancher:latest
-    build: ../rancher
+    build:
+      context: ../rancher
+      dockerfile: Dockerfile
+      args:
+        DOCKER_BUILDKIT: "1"
     depends_on:
-      - mongodb 
+      - mongodb
     ports:
       - "8090:8090"
     environment:
       - grpc.server.address=0.0.0.0
       - spring.data.mongodb.uri=mongodb://mongodb:27017/rancher
       - landscapeAPI.address=http://landscape:8085
+      - spring.datasource.url=jdbc:postgresql://postgres:5432/db?currentSchema=public&stringtype=unspecified
+      - spring.datasource.username=user
+      - spring.datasource.password=user
   landscape:
     container_name: landscape
     image: landscape:latest
-    build: ../landscape
+    build:
+      context: ../landscape
+      dockerfile: Dockerfile
+      args:
+        DOCKER_BUILDKIT: "1"
     ports:
       - "8085:8085"
     depends_on:
@@ -37,12 +55,12 @@ services:
     environment:
       - grpc.client.HandymanService.address=static://handyman:9080
       - grpc.client.RancherService.address=static://rancher:9090
-      - spring.datasource.url=jdbc:postgresql://postgres:5432/db
+      - spring.datasource.url=jdbc:postgresql://postgres:5432/db?currentSchema=public&stringtype=unspecified
       - spring.datasource.username=user
       - spring.datasource.password=user
   postgres:
     container_name: postgres
-    image: postgres:latest
+    image: postgis/postgis
     environment:
       POSTGRES_DB: "db"
       POSTGRES_USER: "user"

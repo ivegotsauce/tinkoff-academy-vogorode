@@ -1,4 +1,4 @@
-package ru.academy.tinkoff.handyman.domain;
+package ru.academy.tinkoff.handyman.document;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

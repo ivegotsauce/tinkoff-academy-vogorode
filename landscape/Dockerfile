@@ -4,7 +4,8 @@ WORKDIR /workspace/app
 
 COPY . /workspace/app
 RUN apk add gcompat
-RUN --mount=type=cache,target=/root/.gradle ./gradlew clean build -x test
+RUN chmod +x ./gradlew
+RUN --mount=type=cache,target=/.gradle ./gradlew clean build -x test
 RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*-SNAPSHOT.jar)
 
 FROM gradle:8.0.2-jdk17-alpine
