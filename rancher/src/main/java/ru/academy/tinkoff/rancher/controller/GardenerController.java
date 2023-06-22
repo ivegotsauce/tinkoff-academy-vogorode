@@ -1,6 +1,7 @@
 package ru.academy.tinkoff.rancher.controller;
 
 
+import io.micrometer.core.annotation.Timed;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.academy.tinkoff.rancher.domain.Gardener;
@@ -17,6 +18,7 @@ import java.util.List;
 public class GardenerController {
     private GardenerService gardenerService;
 
+    @Timed("createGardener")
     @PostMapping
     public GardenerOutput createGardener(@RequestBody GardenerDTO dto) {
         return Util.gardenerToOutput(gardenerService.createGardener(dto));

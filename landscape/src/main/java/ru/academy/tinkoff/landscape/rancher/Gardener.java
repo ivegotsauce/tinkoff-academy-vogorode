@@ -24,6 +24,8 @@ public class Gardener {
     private String firstName;
     @Column(nullable = false)
     private String lastName;
+    @Column(nullable = false)
+    private String login;
     @JsonIgnoreProperties("gardener")
     @OneToMany(
             mappedBy = "gardener",

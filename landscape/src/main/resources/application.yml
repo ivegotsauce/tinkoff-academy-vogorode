@@ -32,7 +32,7 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
+        dialect: ru.academy.tinkoff.landscape.postgis.PostgisDialect
       javax:
         persistence:
           schema-generation:

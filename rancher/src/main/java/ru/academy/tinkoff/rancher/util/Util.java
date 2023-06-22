@@ -25,6 +25,7 @@ public class Util {
         output.setLastName(gardener.getLastName());
         output.setFields(gardener.getFields().stream().map(Util::fieldToProjection).toList());
         output.setPhoneNumber(gardener.getPhoneNumber());
+        output.setLogin(gardener.getLogin());
         return output;
     }
 }

@@ -1,5 +1,6 @@
 package ru.academy.tinkoff.handyman.controller;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.academy.tinkoff.handyman.dto.UserDTO;
@@ -14,6 +15,7 @@ import java.util.List;
 public class UserController {
     private UserService userService;
 
+    @Timed("createUser")
     @PostMapping
     public User createUser(@RequestBody UserDTO dto) {
         return userService.createUser(dto);

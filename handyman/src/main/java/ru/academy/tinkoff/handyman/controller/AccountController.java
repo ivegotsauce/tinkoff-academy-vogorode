@@ -1,6 +1,7 @@
 package ru.academy.tinkoff.handyman.controller;
 
 
+import io.micrometer.core.annotation.Timed;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.academy.tinkoff.handyman.dto.AccountDTO;
@@ -25,6 +26,7 @@ public class AccountController {
         return accountService.findAll();
     }
 
+    @Timed("createBankAccount")
     @PostMapping("/{userId}")
     public Account createAccount(@PathVariable Long userId, @RequestBody AccountDTO dto) {
         return accountService.createAccount(userId, dto);
