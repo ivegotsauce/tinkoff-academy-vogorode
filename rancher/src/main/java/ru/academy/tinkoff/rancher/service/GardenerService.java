@@ -58,5 +58,6 @@ public class GardenerService {
         gardener.setPhoneNumber(dto.phoneNumber());
         gardener.setFirstName(dto.firstName());
         gardener.setLastName(dto.lastName());
+        gardener.setLogin(dto.login());
     }
 }

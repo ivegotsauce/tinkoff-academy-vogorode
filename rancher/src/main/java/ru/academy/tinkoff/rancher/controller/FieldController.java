@@ -1,5 +1,6 @@
 package ru.academy.tinkoff.rancher.controller;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.academy.tinkoff.rancher.dto.FieldDTO;
@@ -15,6 +16,7 @@ import java.util.List;
 public class FieldController {
     private FieldService fieldService;
 
+    @Timed("createField")
     @PostMapping("/{gardenerId}")
     public FieldProjection createField(@PathVariable Long gardenerId,@RequestBody FieldDTO dto) {
         return Util.fieldToProjection(fieldService.createField(gardenerId, dto));
