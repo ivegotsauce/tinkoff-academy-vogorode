@@ -25,10 +25,15 @@ services:
     depends_on:
       - handyman
       - rancher
+      - postgres
     environment:
       - grpc.client.HandymanService.address=static://handyman:9080
       - grpc.client.RancherService.address=static://rancher:9090
+      - spring.datasource.url=jdbc:postgresql://postgres:5432/db
+      - spring.datasource.username=user
+      - spring.datasource.password=user
   postgres:
+    container_name: postgres
     image: postgres:latest
     environment:
       POSTGRES_DB: "db"
