@@ -1,0 +1,27 @@
+@startuml Rancher Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Диаграмма контейнеров (2 уровень)
+
+Person(customer, Садоводы, "Делают заказы по работам на участках")
+
+System_Boundary(c1, "Rancher Application") {
+    ContainerDb(database, "Postgres database", "SQL Database", "Хранит информацию о пользователях и их участках")
+    ContainerDb(mongo, "Mongo database", "NoSQL Database", "Хранит информацию о пользователях")
+    Container(backend_api, "API Application", "Java, Docker Container", "Предоставляет API для работы с аккаунтами садоводов и их участками")
+}
+
+System_Ext(landscape, "Landscape application", "Работает с заказами и акканутами пользователей")
+
+Rel(customer, backend_api, "Использует", "HTTP")
+
+Rel_Back_Neighbor(database, backend_api, "Чтение и запись", "sync, JDBC")
+Rel_Back_Neighbor(mongo, backend_api, "Чтение и запись", "sync, JDBC")
+
+Rel_Neighbor(backend_api, landscape, "Использует", "HTTP")
+
+Lay_D(backend_api, mongo)
+
+@enduml

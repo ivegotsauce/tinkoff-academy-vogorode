@@ -1,0 +1,43 @@
+@startuml Handyman Component
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Диаграмма компонентов (3 уровень)
+
+ContainerDb(db, "Database", "Relational Database Schema", "Хранит информацию о пользователях, их платежных данных")
+ContainerDb(mongo, "Database", "NoSQL Database", "Хранит информацию о пользователях")
+System_Ext(landscape, "Landscape Application", "Работает с заказами и акканутами пользователей")
+
+Container_Boundary(api, "API Application") {
+    Component(account, "Account Controller", "MVC Rest Controller", "Позволяет пользователям управлять своими платежными данными")
+    Component(client, "Client Controller", "MVC Rest Controller", "Позволяет пользователям управлять своими аккаунтами")
+    Component(system, "System Controller", "MVC Rest Controller", "Предоставляет информацию о состоянии системы")
+    Component(user, "User Controller", "MVC Rest Controller", "Позволяет пользователям управлять своими аккаунтами")
+    
+    Component(startup, "Run After Startup Component", "Spring Bean", "Предоставляет информацию о готовности системы отвечать на запросы пользователей")
+    Component(account_service, "Account Service", "Spring Service", "Сервис для управления платежными данными")
+    Component(user_service, "User Service", "Spring Serice", "Сервис для управления учетными записями пользователей")
+    Component(client_service, "Client Service", "Spring Service", "Сервис для управления учетными записями пользователей")
+
+    Component(user_repo, "User Repository", "Spring Repository", "Инструмент для работы с пользователями в базе данных")
+    Component(client_repo, "Client Repository", "Spring Repository", "Инструмент для работы с пользователями в базе данных")
+    Component(account_repo, "Account Repository", "Spring Repository", "Инструмент для работы с платежными данными в базе данных")
+    
+    Rel(system, startup, "Использует")
+    Rel(account, account_service, "Использует")
+    Rel(account_service, account_repo, "Использует")
+    Rel(account_service, user_repo, "Использует")
+    Rel(account_repo, db, "Чтение и запись", "JDBC")
+    Rel(user_repo, db, "Чтение и запись", "JDBC")
+    Rel(user, user_service, "Использует")
+    Rel(user_service, user_repo, "Использует")
+    Rel(client, client_service, "Использует")
+    Rel(client_service, client_repo, "Использует")
+    Rel(client_repo, mongo, "Чтение и запись", "JDBC")
+    Rel(client_service, landscape, "Использует", "HTTP")
+    Rel(landscape, db, "Чтение и запись", "JDBC")
+    Rel(landscape, system, "Использует", "GRPC")
+}
+
+@enduml
