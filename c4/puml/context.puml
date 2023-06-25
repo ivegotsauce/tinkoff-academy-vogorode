@@ -1,0 +1,28 @@
+@startuml Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+title Диаграмма контекста (1 уровень)
+
+Person(customer, "Пользователи", "Пользователи нашей системы: садоводы и работники")
+Enterprise_Boundary(vOgorode, "vOgorode") {
+    System(handyman, "Handyman Application", "Позволяет работникам управлять своими аккаунтами, добавлять и изменять свои платёжные данные")
+    System(landscape, "Landscape Application", "Позволяет всем пользователям управлять своими заказами")
+    System(rancher, "Rancher Application", "Позволяет садоводам управлять своими аккаунтами, добавлять и изменять данные о своих садовых участках")
+}
+
+Rel_Neighbor(customer, handyman, "Используют")
+Rel_Neighbor(customer, landscape, "Используют")
+Rel_Neighbor(customer, rancher, "Используют")
+
+Rel_Neighbor(handyman, landscape, "Создание пользователей")
+Rel_Neighbor(landscape, handyman, "Проверка статуса, сбор статистики банков")
+
+Rel_Neighbor(rancher, landscape, "Создание пользователей")
+Rel_Neighbor(landscape, rancher, "Проверка статуса, сбор статистики садоводов")
+
+Lay_D(customer, landscape)
+Lay_R(rancher, landscape)
+Lay_L(handyman, landscape)
+
+@enduml
