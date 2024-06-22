@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -37,6 +39,9 @@ public class User {
     @Column(nullable = false)
     @Type(type = "org.hibernate.type.BinaryType")
     private byte[] photo;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Date creationTime;
     @ElementCollection
     @Enumerated(EnumType.STRING)
     private List<Skill> skills;

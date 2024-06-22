@@ -23,6 +23,8 @@ public class Gardener {
     @Column(nullable = false)
     private String firstName;
     @Column(nullable = false)
+    private String login;
+    @Column(nullable = false)
     private String lastName;
     @JsonIgnoreProperties("gardener")
     @OneToMany(

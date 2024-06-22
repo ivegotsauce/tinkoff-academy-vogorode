@@ -9,6 +9,7 @@ import java.util.List;
 public class GardenerOutput {
     private String firstName;
     private String lastName;
+    private String login;
     @JsonIgnoreProperties("gardener")
     private List<FieldProjection> fields;
     private String email;

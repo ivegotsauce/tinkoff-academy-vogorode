@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -23,6 +25,9 @@ public class Account {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Date creationTime;
     @JsonIgnoreProperties("accounts")
     @ManyToOne(optional = false)
     private User user;
