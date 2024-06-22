@@ -13,7 +13,6 @@ gradlew bootRun
 | Landscape | 8085 |
 | Rancher   | 8090 |
 
-
 [ДЗ](/docs)
 
 [Инструкция по запуску проекта](dev/README.md)
