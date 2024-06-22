@@ -16,4 +16,8 @@ gradlew bootRun
 
 [ДЗ](/docs)
 
-[Инструкция по запуску проекта](dev/ReadMe.md)
+[Инструкция по запуску проекта](dev/README.md)
+
+[Инструкция по сбору метрик](dev/METRICS.md)
+
+[Диаграмма C4](c4/context.md)
