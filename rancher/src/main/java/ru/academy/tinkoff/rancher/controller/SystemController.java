@@ -1,8 +1,11 @@
 package ru.academy.tinkoff.rancher.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.academy.tinkoff.rancher.component.RunAfterStartup;
 
 import java.util.Map;
 
@@ -13,7 +16,8 @@ public class SystemController {
      * liveness status
      */
     @GetMapping("liveness")
-    public void getLiveness() {
+    public ResponseEntity<HttpStatus> getLiveness() {
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -21,6 +25,6 @@ public class SystemController {
      */
     @GetMapping("readiness")
     public Map<String, String> getReadiness() {
-        return Map.of("RancherService", "OK");
+        return Map.of("RancherService", RunAfterStartup.readiness);
     }
 }
