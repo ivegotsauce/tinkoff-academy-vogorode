@@ -1,0 +1,23 @@
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 15s
+    static_configs:
+      - targets: ['localhost:9091']
+
+  - job_name: 'handyman'
+    scrape_interval: 15s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['handyman:8080']
+
+  - job_name: 'landscape'
+    scrape_interval: 15s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: [ 'landscape:8085' ]
+
+  - job_name: 'rancher'
+    scrape_interval: 15s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: [ 'rancher:8090' ]

@@ -14,3 +14,9 @@ gradlew bootRun
 | Rancher   | 8090 |
 
 [ДЗ](/docs)
+
+[Инструкция по запуску проекта](dev/README.md)
+
+[Инструкция по сбору метрик](dev/METRICS.md)
+
+[Диаграмма C4](c4/context.md)
