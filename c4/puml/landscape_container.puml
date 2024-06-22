@@ -1,0 +1,27 @@
+@startuml Landscape Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Диаграмма контейнеров (2 уровень)
+
+Person(customer, Пользователи, "Работают с заказами")
+
+System_Boundary(c1, "Landscape Application") {
+    ContainerDb(database, "Postgres database", "SQL Database", "Хранит информацию о пользователях, платежных данных, заказах")
+    Container(backend_api, "API Application", "Java, Docker Container", "Предоставляет API для работы с заказами и пользователями, сбора статистики и проверки статуса сторонних сервисов")
+}
+
+System_Ext(handyman, "Handyman application", "Работает с работниками и их платежными данными")
+System_Ext(rancher, "Rancher application", "Работает с садоводами и их участками")
+
+Rel(customer, backend_api, "Использует", "HTTP")
+Rel_Back_Neighbor(database, backend_api, "Чтение и запись", "sync, JDBC")
+
+Rel(backend_api, handyman, "Сбор статистики", "HTTP")
+Rel_Neighbor(backend_api, rancher, "Сбор статистики", "HTTP")
+Rel(backend_api, handyman, "Проерка статуса", "GRPC")
+Rel_Neighbor(backend_api, rancher, "Проверка статуса", "GRPC")
+
+
+@enduml
