@@ -1,0 +1,58 @@
+@startuml Landscape Component
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Диаграмма компонентов (3 уровень)
+
+ContainerDb(db, "Database", "Relational Database Schema", "Хранит информацию о пользователях и их заказах")
+System_Ext(handyman, "Handyman Application", "Работает с аккаунтами и платежными данными работников")
+System_Ext(rancher, "Rancher Application", "Работает с аккаунтами и садовыми участками садовников")
+
+Container_Boundary(api, "API Application") {
+    Component(order, "Order Controller", "MVC Rest Controller", "Позволяет пользователям управлять своими заказами")
+    Component(stats, "Statistics Controller", "MVC Rest Controller", "Предоставляет статистику об используемых способах оплаты и участках садовников")
+    Component(system, "System Controller", "MVC Rest Controller", "Предоставляет информацию о состоянии системы")
+    Component(status, "Status Controller", "MVC Rest Controller", "Предоставляет информацию о состоянии сторонних сервисов")
+    Component(user, "User Controller", "MVC Rest Controller", "Предоставляет API для управления учетными записями пользователей")
+    
+    Component(startup, "Run After Startup Component", "Spring Bean", "Предоставляет информацию о готовности системы отвечать на запросы пользователей")
+    Component(order_service, "Order Service", "Spring Service", "Сервис для управления заказами")
+    Component(field_service, "Field Service", "Spring Service", "Сервис для управления садовыми участками")
+    Component(handyman_user_service, "Handyman User Service", "Spring Serice", "Сервис для управления учетными записями пользователей")
+    Component(status_service, "Status Service", "Spring Service", "Сервис для получения информации о состоянии сторонних сервисов")
+    Component(stats_service, "Statistics Service", "Spring Service", "Сервис для получения статистики")
+    Component(user_service, "User Service", "Spring Serice", "Сервис для управления учетными записями пользователей")
+
+    Component(field_repo, "Field Repository", "Spring Repository", "Инструмент для работы с садовыми участками в базе данных")
+    Component(user_repo, "User Repository", "Spring Repository", "Инструмент для работы с пользователями в базе данных")
+    Component(handyman_user_repo, "Handyman User Repository", "Spring Repository", "Инструмент для работы с пользователями в базе данных")
+    Component(order_repo, "Order Repository", "Spring Repository", "Инструмент для работы с заказами в базе данных")
+    Component(stats_repo, "Statistics Repository", "Инструмент для сбора статистики из базы данных")
+    
+    Rel(system, startup, "Использует")
+    Rel(order, order_service, "Использует")
+    Rel(order_service, order_repo, "Использует")
+    Rel(order_service, handyman_user_service, "Использует")
+    Rel(order_service, field_service, "Использует")
+    Rel(handyman_user_service, handyman_user_repo, "Использует")
+    Rel(field_service, field_repo, "Использует")
+    Rel(field_repo, db, "Чтение", "JDBC")
+    Rel(handyman_user_repo, db, "Чтение", "JDBC")
+    Rel(order_repo, db, "Чтение и запись", "JDBC")
+    Rel(status, status_service, "Использует")
+    Rel(status_service, handyman, "Использует", "GRPC")
+    Rel(status_service, rancher, "Использует", "GRPC")
+    Rel(stats, stats_service, "Использует")
+    Rel(stats_service, stats_repo, "Использует")
+    Rel(stats_repo, db, "Чтение", "JDBC")
+    Rel(user, user_service, "Использует")
+    Rel(user_service, user_repo, "Использует")
+    Rel(user_repo, db, "Чтение и запись", "JDBC")
+    Rel(rancher, user, "Использует", "HTTP")
+    Rel(handyman, user, "Ипользует", "HTTP")
+    
+}
+
+
+@enduml

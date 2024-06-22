@@ -29,3 +29,13 @@ spring:
     password: user
   liquibase:
     change-log: classpath:db/changelog/changelog.yml
+  jpa:
+    properties:
+      hibernate:
+        dialect: ru.academy.tinkoff.landscape.postgis.PostgisDialect
+      javax:
+        persistence:
+          schema-generation:
+            database:
+              action: update
+    show-sql: true

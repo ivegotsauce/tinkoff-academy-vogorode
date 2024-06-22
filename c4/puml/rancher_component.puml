@@ -1,0 +1,43 @@
+@startuml Rancher Component
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Диаграмма компонентов (3 уровень)
+
+ContainerDb(db, "Database", "Relational Database Schema", "Хранит информацию о садовниках и их участках")
+ContainerDb(mongo, "Database", "NoSQL Database", "Хранит информацию о пользователях")
+System_Ext(landscape, "Landscape Application", "Работает с заказами и акканутами пользователей")
+
+Container_Boundary(api, "API Application") {
+    Component(field, "Field Controller", "MVC Rest Controller", "Позволяет садовникам управлять своими садовыми участками")
+    Component(client, "User Controller", "MVC Rest Controller", "Позволяет пользователям управлять своими аккаунтами")
+    Component(system, "System Controller", "MVC Rest Controller", "Предоставляет информацию о состоянии системы")
+    Component(gardener, "Gardener Controller", "MVC Rest Controller", "Позволяет садовникам управлять своими аккаунтами")
+    
+    Component(startup, "Run After Startup Component", "Spring Bean", "Предоставляет информацию о готовности системы отвечать на запросы пользователей")
+    Component(field_service, "Field Service", "Spring Service", "Сервис для управления садовыми участками")
+    Component(gardener_service, "Gardener Service", "Spring Serice", "Сервис для управления учетными записями садовников")
+    Component(client_service, "User Service", "Spring Service", "Сервис для управления учетными записями пользователей")
+
+    Component(gardener_repo, "Gardener Repository", "Spring Repository", "Инструмент для работы с садовниками в базе данных")
+    Component(client_repo, "User Repository", "Spring Repository", "Инструмент для работы с пользователями в базе данных")
+    Component(field_repo, "Field Repository", "Spring Repository", "Инструмент для работы с садовыми участками в базе данных")
+    
+    Rel(system, startup, "Использует")
+    Rel(field, field_service, "Использует")
+    Rel(field_service, field_repo, "Использует")
+    Rel(field_service, gardener_repo, "Использует")
+    Rel(field_repo, db, "Чтение и запись", "JDBC")
+    Rel(gardener_repo, db, "Чтение и запись", "JDBC")
+    Rel(gardener, gardener_service, "Использует")
+    Rel(gardener_service, gardener_repo, "Использует")
+    Rel(client, client_service, "Использует")
+    Rel(client_service, client_repo, "Использует")
+    Rel(client_repo, mongo, "Чтение и запись", "JDBC")
+    Rel(client_service, landscape, "Использует", "HTTP")
+    Rel(landscape, db, "Чтение и запись", "JDBC")
+    Rel(landscape, system, "Использует", "GRPC")
+}
+
+@enduml

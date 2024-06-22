@@ -1,4 +1,4 @@
-create extension "uuid-ossp";
+create extension if not exists "uuid-ossp";
 
 create table if not exists client
 (
@@ -8,5 +8,7 @@ create table if not exists client
     email         text,
     phone_number  text,
     creation_date date,
-    update_date   date
+    update_date   date,
+    latitude      float8,
+    longitude     float8
 );
