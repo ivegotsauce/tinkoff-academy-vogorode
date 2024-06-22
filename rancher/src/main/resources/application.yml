@@ -24,7 +24,21 @@ spring:
       host: localhost
       port: 27017
       database: rancher
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db
+    username: user
+    password: user
   liquibase:
-    change-log: classpath:db/changelog/changelog.yml
+    enabled: false
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
+      javax:
+        persistence:
+          schema-generation:
+            database:
+              action: update
+    show-sql: true
 landscapeAPI:
   address: "http://localhost:8085"

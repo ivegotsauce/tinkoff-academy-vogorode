@@ -1,51 +1,46 @@
 package ru.academy.tinkoff.handyman.controller;
 
 import io.micrometer.core.annotation.Timed;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.academy.tinkoff.handyman.domain.User;
 import ru.academy.tinkoff.handyman.dto.UserDTO;
+import ru.academy.tinkoff.handyman.entity.User;
 import ru.academy.tinkoff.handyman.service.UserService;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
-@RequestMapping("/user")
-@RequiredArgsConstructor
+@AllArgsConstructor
+@RequestMapping("user")
 public class UserController {
-    private final UserService userService;
+    private UserService userService;
 
-    @Timed("handymanCreateUser")
+    @Timed("createUser")
     @PostMapping
-    public User save(@RequestBody UserDTO dto) throws MalformedURLException, URISyntaxException {
+    public User createUser(@RequestBody UserDTO dto) {
         return userService.createUser(dto);
     }
 
-    @Timed("handymanUpdateUser")
     @PutMapping("/{id}")
-    public User update(@PathVariable UUID id, @RequestBody UserDTO dto) throws MalformedURLException, URISyntaxException {
+    public User updateUser(@PathVariable Long id, @RequestBody UserDTO dto) {
         return userService.updateUser(id, dto);
     }
 
-
-    @Timed("handymanGetUser")
     @GetMapping("/{id}")
-    public User findById(@PathVariable UUID id) {
+    public User getById(@PathVariable Long id) {
         return userService.findById(id);
     }
 
-    @Timed("handymanGetAllUsers")
-    @GetMapping
-    public List<User> findAll() {
-        return userService.findAll();
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        userService.delete(id);
     }
 
-    @Timed("handymanDeleteUser")
-    @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable UUID id) {
-        userService.deleteById(id);
+    @GetMapping
+    public List<User> getAll(@RequestParam(required = false) Boolean sorted) {
+        if (sorted != null && sorted) {
+            return userService.findAllSorted();
+        }
+        return userService.findAll();
     }
 }
